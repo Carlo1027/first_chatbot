@@ -12,17 +12,17 @@ model = genai.GenerativeModel('gemini-pro')
 # Funciones del core (las que definiste en el Paso 2)
 # Colócalas aquí dentro del mismo archivo app.py
 def explicar_concepto(tema):
-    prompt = f'''Eres un tutor de Física 1. Explica el concepto de {tema} de forma clara, concisa y paso a paso, como si se lo explicaras a un estudiante universitario. Incluye ejemplos si es pertinente.'''
+    prompt = f"""Eres un tutor de Física 1. Explica el concepto de {tema} de forma clara, concisa y paso a paso, como si se lo explicaras a un estudiante universitario. Incluye ejemplos si es pertinente."""
     response = model.generate_content(prompt)
     return response.text
 
 def generar_ejercicio(tema, nivel):
-    prompt = f'''Eres un tutor de Física 1. Crea un problema nuevo y original sobre {tema} para un estudiante de nivel {nivel}. Asegúrate de que el problema sea relevante para el tema y el nivel de dificultad. No incluyas la solución.'''
+    prompt = f"""Eres un tutor de Física 1. Crea un problema nuevo y original sobre {tema} para un estudiante de nivel {nivel}. Asegúrate de que el problema sea relevante para el tema y el nivel de dificultad. No incluyas la solución."""
     response = model.generate_content(prompt)
     return response.text
 
 def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
-    prompt = f'''Eres un tutor de Física 1. Tu tarea es evaluar la respuesta de un estudiante a un problema y proporcionar retroalimentación detallada.
+    prompt = f"""Eres un tutor de Física 1. Tu tarea es evaluar la respuesta de un estudiante a un problema y proporcionar retroalimentación detallada.
         Problema:
         {ejercicio}
     
@@ -34,7 +34,7 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
         2.  Si es incorrecta, explica *por qué* es incorrecta, señalando los errores conceptuales o de cálculo.
         3.  Luego, proporciona la solución *completa y detallada* paso a paso del ejercicio original.
         4.  Usa formato Markdown para una mejor lectura (por ejemplo, listas numeradas para pasos).
-    '''
+    """
     response = model.generate_content(prompt)
     return response.text
 
