@@ -7,7 +7,7 @@ import os # Para acceder a variables de entorno
 # En Streamlit Cloud, configurarás esta como una "Secret" llamada "GEMINI_API_KEY"
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
 
 # Funciones del core (las que definiste en el Paso 2)
 # Colócalas aquí dentro del mismo archivo app.py
