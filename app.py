@@ -33,53 +33,57 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
     response = model.generate_content(prompt)
     return response.text
 
-# Configurar Gemini API Key
-# En Streamlit Cloud, configurarás esta como una "Secret" llamada "GEMINI_API_KEY"
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+def main():
+    # Configurar Gemini API Key
+    # En Streamlit Cloud, configurarás esta como una "Secret" llamada "GEMINI_API_KEY"
+    genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+    
+    model = genai.GenerativeModel('gemini-pro')
+    
+    st.title("👨‍🏫 Chatbot de Física 1 para Universitarios")
+    st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Física 1.")
+    
+    # Selectores para Tema y Nivel
+    temas = ["Cinemática", "Dinámica", "Trabajo y Energía", "Cantidad de Movimiento",
+             "Movimiento Rotacional", "Gravitación", "Oscilaciones", "Ondas", "Termodinámica"]
+    nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado"])
+    tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
+    
+    # Opciones del chatbot
+    opcion = st.radio("¿Qué quieres hacer hoy?",
+                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio"))
+    
+    if opcion == "Explicar un Concepto":
+        st.header(f"Explicación de {tema_seleccionado}")
+        if st.button("Obtener Explicación"):
+            with st.spinner("Generando explicación..."):
+                explicacion = explicar_concepto(tema_seleccionado)
+                st.write(explicacion)
+    
+    elif opcion == "Proponer un Ejercicio":
+        st.header(f"Ejercicio de {tema_seleccionado} (Nivel {nivel_estudiante})")
+        if st.button("Generar Ejercicio"):
+            with st.spinner("Generando ejercicio..."):
+                ejercicio = generar_ejercicio(tema_seleccionado, nivel_estudiante)
+                st.session_state['current_exercise'] = ejercicio # Guardar el ejercicio para evaluación
+                st.write(ejercicio)
+                st.info("Ahora puedes ir a 'Evaluar mi Respuesta' para obtener retroalimentación.")
+    
+    elif opcion == "Evaluar mi Respuesta a un Ejercicio":
+        st.header("Evaluar mi Respuesta")
+        if 'current_exercise' in st.session_state and st.session_state['current_exercise']:
+            st.write("**Ejercicio Actual:**")
+            st.write(st.session_state['current_exercise'])
+            respuesta_estudiante = st.text_area("Escribe aquí tu respuesta:")
+            if st.button("Evaluar"):
+                if respuesta_estudiante:
+                    with st.spinner("Evaluando y generando feedback..."):
+                        feedback = evaluar_respuesta_y_dar_feedback(st.session_state['current_exercise'], respuesta_estudiante)
+                        st.write(feedback)
+                else:
+                    st.warning("Por favor, escribe tu respuesta para evaluar.")
+        else:
+            st.info("Primero genera un ejercicio en la sección 'Proponer un Ejercicio'.")
 
-model = genai.GenerativeModel('gemini-pro')
-
-st.title("👨‍🏫 Chatbot de Física 1 para Universitarios")
-st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Física 1.")
-
-# Selectores para Tema y Nivel
-temas = ["Cinemática", "Dinámica", "Trabajo y Energía", "Cantidad de Movimiento",
-         "Movimiento Rotacional", "Gravitación", "Oscilaciones", "Ondas", "Termodinámica"]
-nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado"])
-tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
-
-# Opciones del chatbot
-opcion = st.radio("¿Qué quieres hacer hoy?",
-                  ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio"))
-
-if opcion == "Explicar un Concepto":
-    st.header(f"Explicación de {tema_seleccionado}")
-    if st.button("Obtener Explicación"):
-        with st.spinner("Generando explicación..."):
-            explicacion = explicar_concepto(tema_seleccionado)
-            st.write(explicacion)
-
-elif opcion == "Proponer un Ejercicio":
-    st.header(f"Ejercicio de {tema_seleccionado} (Nivel {nivel_estudiante})")
-    if st.button("Generar Ejercicio"):
-        with st.spinner("Generando ejercicio..."):
-            ejercicio = generar_ejercicio(tema_seleccionado, nivel_estudiante)
-            st.session_state['current_exercise'] = ejercicio # Guardar el ejercicio para evaluación
-            st.write(ejercicio)
-            st.info("Ahora puedes ir a 'Evaluar mi Respuesta' para obtener retroalimentación.")
-
-elif opcion == "Evaluar mi Respuesta a un Ejercicio":
-    st.header("Evaluar mi Respuesta")
-    if 'current_exercise' in st.session_state and st.session_state['current_exercise']:
-        st.write("**Ejercicio Actual:**")
-        st.write(st.session_state['current_exercise'])
-        respuesta_estudiante = st.text_area("Escribe aquí tu respuesta:")
-        if st.button("Evaluar"):
-            if respuesta_estudiante:
-                with st.spinner("Evaluando y generando feedback..."):
-                    feedback = evaluar_respuesta_y_dar_feedback(st.session_state['current_exercise'], respuesta_estudiante)
-                    st.write(feedback)
-            else:
-                st.warning("Por favor, escribe tu respuesta para evaluar.")
-    else:
-        st.info("Primero genera un ejercicio en la sección 'Proponer un Ejercicio'.")
+if __name__ == "__main__":
+    main()
