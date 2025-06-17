@@ -17,18 +17,17 @@ def generar_ejercicio(tema, nivel):
 
 def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
     prompt = f'''Eres un tutor de Física 1. Tu tarea es evaluar la respuesta de un estudiante a un problema y proporcionar retroalimentación detallada.
-
-    Problema:
-    {ejercicio}
-
-    Respuesta del estudiante:
-    {respuesta_estudiante}
-
-    Por favor, sigue estos pasos:
-    1.  Primero, indica si la respuesta del estudiante es correcta o incorrecta.
-    2.  Si es incorrecta, explica *por qué* es incorrecta, señalando los errores conceptuales o de cálculo.
-    3.  Luego, proporciona la solución *completa y detallada* paso a paso del ejercicio original.
-    4.  Usa formato Markdown para una mejor lectura (por ejemplo, listas numeradas para pasos).
+        Problema:
+        {ejercicio}
+    
+        Respuesta del estudiante:
+        {respuesta_estudiante}
+    
+        Por favor, sigue estos pasos:
+        1.  Primero, indica si la respuesta del estudiante es correcta o incorrecta.
+        2.  Si es incorrecta, explica *por qué* es incorrecta, señalando los errores conceptuales o de cálculo.
+        3.  Luego, proporciona la solución *completa y detallada* paso a paso del ejercicio original.
+        4.  Usa formato Markdown para una mejor lectura (por ejemplo, listas numeradas para pasos).
     '''
     response = model.generate_content(prompt)
     return response.text
