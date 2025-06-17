@@ -3,6 +3,12 @@ import streamlit as st
 import google.generativeai as genai
 import os # Para acceder a variables de entorno
 
+# Configurar Gemini API Key
+# En Streamlit Cloud, configurarás esta como una "Secret" llamada "GEMINI_API_KEY"
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+
+model = genai.GenerativeModel('gemini-pro')
+
 # Funciones del core (las que definiste en el Paso 2)
 # Colócalas aquí dentro del mismo archivo app.py
 def explicar_concepto(tema):
@@ -33,12 +39,6 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
     return response.text
 
 def main():
-    # Configurar Gemini API Key
-    # En Streamlit Cloud, configurarás esta como una "Secret" llamada "GEMINI_API_KEY"
-    genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-    
-    model = genai.GenerativeModel('gemini-pro')
-    
     st.title("👨‍🏫 Chatbot de Física 1 para Universitarios")
     st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Física 1.")
     
