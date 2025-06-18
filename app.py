@@ -39,8 +39,8 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
     return response.text
 
 def main():
-    st.title("👨‍🏫 Chatbot de Física 1 para Universitarios v1")
-    st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Física 1.")
+    st.title("👨‍🏫 Chatbot de Bases de Datos para Universitarios")
+    st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Bases de Datos")
     
     # Selectores para Tema y Nivel
     temas = ["Introducción a las Bases de Datos",
