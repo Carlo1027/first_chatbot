@@ -43,8 +43,16 @@ def main():
     st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Física 1.")
     
     # Selectores para Tema y Nivel
-    temas = ["Cinemática", "Dinámica", "Trabajo y Energía", "Cantidad de Movimiento",
-             "Movimiento Rotacional", "Gravitación", "Oscilaciones", "Ondas", "Termodinámica"]
+    temas = ["Introducción a las Bases de Datos",
+        "Modelo Relacional y Normalización",
+        "SQL - Nivel Básico",
+        "SQL - Nivel Intermedio",
+        "SQL - Nivel Avanzado",
+        "Administración de Bases de Datos",
+        "Modelado de Datos y Herramientas",
+        "Proyecto Final o Caso Práctico",
+        "Temas Complementarios"
+    ]
     nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado"])
     tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
     
