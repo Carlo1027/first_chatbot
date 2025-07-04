@@ -155,6 +155,14 @@ def main():
                             st.session_state.exam_questions.append(q)
                 st.session_state.exam_started = True
                 st.rerun()
+
+                # Botón para reiniciar el examen en cualquier momento
+                st.divider()
+                if st.button("🔄 Reiniciar Examen"):
+                    for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
+                        if key in st.session_state:
+                            del st.session_state[key]
+                    st.rerun()
     
         else:
             idx = st.session_state.exam_index
@@ -207,13 +215,6 @@ def main():
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
                         del st.session_state[key]
                     st.rerun()
-        # Botón para reiniciar el examen en cualquier momento
-        st.divider()
-        if st.button("🔄 Reiniciar Examen"):
-            for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
-                if key in st.session_state:
-                    del st.session_state[key]
-            st.rerun()
 
 
 
