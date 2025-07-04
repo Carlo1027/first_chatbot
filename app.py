@@ -41,6 +41,12 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
 import random
 
 def generar_ejercicio_opcion_multiple(tema, nivel):
+    historial = ""
+    if preguntas_previas:
+        historial = "\nEstas son preguntas que ya se han hecho. No las repitas:\n" + "\n".join(
+            [f"- {p['pregunta']}" for p in preguntas_previas if p.get("pregunta")]
+        )
+    
     prompt = f"""
         Eres un tutor de Bases de Datos. Debes tener un tópico asociado a esta unidad del curso: {tema}. Crea una pregunta tipo examen de opción múltiple sobre algún tópico dentro de la unidad {tema} para un estudiante de nivel {nivel}.
         Debes retornar:
@@ -48,7 +54,7 @@ def generar_ejercicio_opcion_multiple(tema, nivel):
         1. El enunciado de la pregunta.
         2. Cuatro opciones (A, B, C, D).
         3. Indicar cuál es la opción correcta (por ejemplo, "A").
-        4. No repitas la pregunta muchas veces.
+        4. {historial}
         
         Usa este formato:
         Pregunta: ...
