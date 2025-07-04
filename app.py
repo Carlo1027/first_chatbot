@@ -102,7 +102,7 @@ def main():
     
     # Opciones del chatbot
     opcion = st.radio("¿Qué quieres hacer hoy?",
-                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Probar mi Conocimiento"))
+                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Examen de Opción Múltiple"))
     
     if opcion == "Explicar un Concepto":
         st.header(f"Explicación de {tema_seleccionado}")
@@ -136,7 +136,7 @@ def main():
         else:
             st.info("Primero genera un ejercicio en la sección 'Proponer un Ejercicio'.")
 
-    elif opcion == "Probar mi Conocimiento)":
+    elif opcion == "Examen de Opción Múltiple":
         st.header("📝 Examen de Opción Múltiple")
     
         if 'exam_started' not in st.session_state:
