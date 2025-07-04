@@ -254,8 +254,8 @@ def main():
                     st.markdown(f"**Tu respuesta:** {r['seleccion']} – {'Correcta ✅' if r['correcta'] else 'Incorrecta ❌'}")
     
                     if not r["correcta"] and r["feedback"]:
-                        st.markdown("### 💡 Feedback:")
-                        st.markdown(r["feedback"])
+                        with st.expander("💡 Ver Feedback"):
+                            st.markdown(r["feedback"])
     
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
