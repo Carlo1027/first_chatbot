@@ -86,7 +86,7 @@ def generar_ejercicio_opcion_multiple(tema, nivel, preguntas_previas=None):
             "respuesta_correcta": respuesta_correcta
         }
     except Exception as e:
-        return None  # Podrías loggear esto si estás en modo debug
+        return None
 
 def main():
     st.title("👨‍🏫 Mini-Módulo de Evaluación Formativa Adaptativa Asistida por IA para el curso Bases de Datos para Universitarios")
@@ -160,16 +160,7 @@ def main():
                         if q:
                             st.session_state.exam_questions.append(q)
                 st.session_state.exam_started = True
-                st.rerun()
-
-                # Botón para reiniciar el examen en cualquier momento
-                st.divider()
-                if st.button("🔄 Reiniciar Examen"):
-                    for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
-                        if key in st.session_state:
-                            del st.session_state[key]
-                    st.rerun()
-    
+                st.rerun()    
         else:
             idx = st.session_state.exam_index
             if idx < len(st.session_state.exam_questions):
@@ -198,6 +189,14 @@ def main():
                         "feedback": feedback
                     })
                     st.session_state.exam_index += 1
+                    st.rerun()
+                    
+                # Botón para reiniciar el examen en cualquier momento
+                st.divider()
+                if st.button("🔄 Reiniciar Examen"):
+                    for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
+                        if key in st.session_state:
+                            del st.session_state[key]
                     st.rerun()
             else:
                 st.success("¡Examen finalizado!")
