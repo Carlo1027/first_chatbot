@@ -109,7 +109,7 @@ def main():
                         pregunta = generar_ejercicio(tema_seleccionado, nivel_estudiante)
                         st.session_state.exam_questions.append(pregunta)
                 st.session_state.exam_started = True
-                st.experimental_rerun()
+                st.rerun()()
     
         else:
             index = st.session_state.exam_index
@@ -131,7 +131,7 @@ def main():
                             "feedback": feedback
                         })
                         st.session_state.exam_index += 1
-                        st.experimental_rerun()
+                        st.rerun()()
             else:
                 st.success("¡Examen terminado!")
                 total_correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
@@ -146,7 +146,7 @@ def main():
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_user_answers", "exam_results"]:
                         del st.session_state[key]
-                    st.experimental_rerun()
+                    st.rerun()()
 
 
 if __name__ == "__main__":
