@@ -40,7 +40,7 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
 
 import random
 
-def generar_ejercicio_opcion_multiple(tema, nivel):
+def generar_ejercicio_opcion_multiple(tema, nivel, preguntas_previas=None):
     historial = ""
     if preguntas_previas:
         historial = "\nEstas son preguntas que ya se han hecho. No las repitas:\n" + "\n".join(
@@ -156,7 +156,7 @@ def main():
             if st.button("Comenzar Examen"):
                 with st.spinner("Generando preguntas..."):
                     for _ in range(10):
-                        q = generar_ejercicio_opcion_multiple(tema_seleccionado, nivel_estudiante)
+                        q = generar_ejercicio_opcion_multiple(tema_seleccionado, nivel_estudiante, preguntas_previas=st.session_state.exam_questions)
                         if q:
                             st.session_state.exam_questions.append(q)
                 st.session_state.exam_started = True
