@@ -42,7 +42,7 @@ import random
 
 def generar_ejercicio_opcion_multiple(tema, nivel):
     prompt = f"""
-        Eres un tutor de Bases de Datos. Crea una pregunta tipo examen de opción múltiple sobre {tema} para un estudiante de nivel {nivel}.
+        Eres un tutor de Bases de Datos. Debes tener un tópico asociado a esta unidad del curso: {tema}. Crea una pregunta tipo examen de opción múltiple sobre algún tópico dentro de la unidad {tema} para un estudiante de nivel {nivel}.
         Debes retornar:
         
         1. El enunciado de la pregunta.
