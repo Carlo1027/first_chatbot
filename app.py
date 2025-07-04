@@ -38,6 +38,49 @@ def evaluar_respuesta_y_dar_feedback(ejercicio, respuesta_estudiante):
     response = model.generate_content(prompt)
     return response.text
 
+import random
+
+def generar_ejercicio_opcion_multiple(tema, nivel):
+    prompt = f"""
+        Eres un tutor de Bases de Datos. Crea una pregunta tipo examen de opción múltiple sobre {tema} para un estudiante de nivel {nivel}.
+        Debes retornar:
+        
+        1. El enunciado de la pregunta.
+        2. Cuatro opciones (A, B, C, D).
+        3. Indicar cuál es la opción correcta (por ejemplo, "A").
+        
+        Usa este formato:
+        Pregunta: ...
+        Opciones:
+        A) ...
+        B) ...
+        C) ...
+        D) ...
+        Respuesta correcta: X
+    """
+    response = model.generate_content(prompt)
+    texto = response.text.strip()
+
+    # Extraer partes con parsing simple
+    try:
+        pregunta = texto.split("Pregunta:")[1].split("Opciones:")[0].strip()
+        opciones_raw = texto.split("Opciones:")[1].split("Respuesta correcta:")[0].strip()
+        respuesta_correcta = texto.split("Respuesta correcta:")[1].strip()
+
+        opciones = {}
+        for linea in opciones_raw.splitlines():
+            if ")" in linea:
+                clave, valor = linea.split(")", 1)
+                opciones[clave.strip()] = valor.strip()
+
+        return {
+            "pregunta": pregunta,
+            "opciones": opciones,
+            "respuesta_correcta": respuesta_correcta
+        }
+    except Exception as e:
+        return None  # Podrías loggear esto si estás en modo debug
+
 def main():
     st.title("👨‍🏫 Chatbot de Bases de Datos para Universitarios")
     st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Bases de Datos")
@@ -58,7 +101,7 @@ def main():
     
     # Opciones del chatbot
     opcion = st.radio("¿Qué quieres hacer hoy?",
-                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Simular un Examen"))
+                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Simular un Examen", "Simular un Examen (Opción única)))
     
     if opcion == "Explicar un Concepto":
         st.header(f"Explicación de {tema_seleccionado}")
@@ -147,6 +190,63 @@ def main():
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_user_answers", "exam_results"]:
                         del st.session_state[key]
                     st.rerun()()
+
+    elif opcion == "Simular un Examen (Opción única)":
+        st.header("📝 Examen de Opción Múltiple")
+    
+        if 'exam_started' not in st.session_state:
+            st.session_state.exam_started = False
+            st.session_state.exam_index = 0
+            st.session_state.exam_questions = []
+            st.session_state.exam_results = []
+    
+        if not st.session_state.exam_started:
+            if st.button("Comenzar Examen"):
+                with st.spinner("Generando preguntas..."):
+                    for _ in range(10):
+                        q = generar_ejercicio_opcion_multiple(tema_seleccionado, nivel_estudiante)
+                        if q:
+                            st.session_state.exam_questions.append(q)
+                st.session_state.exam_started = True
+                st.rerun()
+    
+        else:
+            idx = st.session_state.exam_index
+            if idx < len(st.session_state.exam_questions):
+                q = st.session_state.exam_questions[idx]
+                st.subheader(f"Pregunta {idx + 1} de 10")
+                st.write(q["pregunta"])
+                opciones = list(q["opciones"].items())
+                seleccion = st.radio("Selecciona una opción:", [f"{k}) {v}" for k, v in opciones], key=f"preg_{idx}")
+    
+                if st.button("Responder", key=f"btn_{idx}"):
+                    respuesta_usuario = seleccion.split(")")[0]
+                    correcta = respuesta_usuario == q["respuesta_correcta"]
+                    st.session_state.exam_results.append({
+                        "pregunta": q["pregunta"],
+                        "seleccion": respuesta_usuario,
+                        "correcta": correcta,
+                        "respuesta_correcta": q["respuesta_correcta"],
+                        "opciones": q["opciones"]
+                    })
+                    st.session_state.exam_index += 1
+                    st.rerun()
+            else:
+                st.success("¡Examen finalizado!")
+                total = len(st.session_state.exam_results)
+                correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
+                st.markdown(f"### Resultado: {correctas} / {total} correctas")
+                for i, r in enumerate(st.session_state.exam_results):
+                    st.markdown(f"---\n**Pregunta {i+1}:** {r['pregunta']}")
+                    for clave, texto in r["opciones"].items():
+                        prefijo = "✅" if clave == r["respuesta_correcta"] else "❌" if clave == r["seleccion"] else "•"
+                        st.markdown(f"{prefijo} {clave}) {texto}")
+                    st.markdown(f"**Tu respuesta:** {r['seleccion']} – {'Correcta ✅' if r['correcta'] else 'Incorrecta ❌'}")
+    
+                if st.button("Reiniciar Examen"):
+                    for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
+                        del st.session_state[key]
+                    st.rerun()
 
 
 if __name__ == "__main__":
