@@ -58,7 +58,7 @@ def main():
     
     # Opciones del chatbot
     opcion = st.radio("¿Qué quieres hacer hoy?",
-                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio"))
+                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Simular un Examen"))
     
     if opcion == "Explicar un Concepto":
         st.header(f"Explicación de {tema_seleccionado}")
