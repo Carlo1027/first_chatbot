@@ -48,6 +48,7 @@ def generar_ejercicio_opcion_multiple(tema, nivel):
         1. El enunciado de la pregunta.
         2. Cuatro opciones (A, B, C, D).
         3. Indicar cuál es la opción correcta (por ejemplo, "A").
+        4. No repitas la pregunta muchas veces.
         
         Usa este formato:
         Pregunta: ...
