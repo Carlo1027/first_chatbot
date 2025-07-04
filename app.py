@@ -92,5 +92,62 @@ def main():
         else:
             st.info("Primero genera un ejercicio en la sección 'Proponer un Ejercicio'.")
 
+    elif opcion == "Simular un Examen":
+        st.header("📝 Examen de Bases de Datos")
+    
+        if 'exam_started' not in st.session_state:
+            st.session_state.exam_started = False
+            st.session_state.exam_index = 0
+            st.session_state.exam_questions = []
+            st.session_state.exam_user_answers = []
+            st.session_state.exam_results = []
+    
+        if not st.session_state.exam_started:
+            if st.button("Comenzar Examen"):
+                with st.spinner("Generando preguntas del examen..."):
+                    for _ in range(10):
+                        pregunta = generar_ejercicio(tema_seleccionado, nivel_estudiante)
+                        st.session_state.exam_questions.append(pregunta)
+                st.session_state.exam_started = True
+                st.experimental_rerun()
+    
+        else:
+            index = st.session_state.exam_index
+            if index < 10:
+                st.subheader(f"Pregunta {index + 1} de 10")
+                st.write(st.session_state.exam_questions[index])
+                respuesta = st.text_area("Tu respuesta:", key=f"respuesta_{index}")
+                if st.button("Enviar Respuesta", key=f"enviar_{index}"):
+                    with st.spinner("Evaluando..."):
+                        feedback = evaluar_respuesta_y_dar_feedback(
+                            st.session_state.exam_questions[index], respuesta
+                        )
+                        es_correcta = "correcta" in feedback.lower()
+                        st.session_state.exam_user_answers.append(respuesta)
+                        st.session_state.exam_results.append({
+                            "pregunta": st.session_state.exam_questions[index],
+                            "respuesta": respuesta,
+                            "correcta": es_correcta,
+                            "feedback": feedback
+                        })
+                        st.session_state.exam_index += 1
+                        st.experimental_rerun()
+            else:
+                st.success("¡Examen terminado!")
+                total_correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
+                st.markdown(f"### Resultado: {total_correctas} / 10 respuestas correctas")
+                for i, r in enumerate(st.session_state.exam_results):
+                    st.markdown(f"---\n**Pregunta {i+1}:**\n{r['pregunta']}")
+                    st.markdown(f"**Tu Respuesta:** {r['respuesta']}")
+                    st.markdown(f"**Correcta:** {'✅ Sí' if r['correcta'] else '❌ No'}")
+                    with st.expander("Ver Feedback"):
+                        st.markdown(r["feedback"])
+    
+                if st.button("Reiniciar Examen"):
+                    for key in ["exam_started", "exam_index", "exam_questions", "exam_user_answers", "exam_results"]:
+                        del st.session_state[key]
+                    st.experimental_rerun()
+
+
 if __name__ == "__main__":
     main()
