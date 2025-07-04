@@ -221,8 +221,5 @@ def main():
                         del st.session_state[key]
                     st.rerun()
 
-
-
-
 if __name__ == "__main__":
     main()
