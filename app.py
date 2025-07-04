@@ -192,7 +192,7 @@ def main():
                     st.rerun()()
 
     elif opcion == "Simular un Examen (Opción única)":
-        st.header("📝 Examen de Opción Múltiple")
+        st.header("📝 Examen de Opción Múltiple con Feedback Final")
     
         if 'exam_started' not in st.session_state:
             st.session_state.exam_started = False
@@ -222,12 +222,20 @@ def main():
                 if st.button("Responder", key=f"btn_{idx}"):
                     respuesta_usuario = seleccion.split(")")[0]
                     correcta = respuesta_usuario == q["respuesta_correcta"]
+    
+                    feedback = ""
+                    if not correcta:
+                        ejercicio_texto = f"{q['pregunta']}\nOpciones:\n" + "\n".join([f"{k}) {v}" for k, v in q["opciones"].items()])
+                        respuesta_estudiante = f"{respuesta_usuario}) {q['opciones'][respuesta_usuario]}"
+                        feedback = evaluar_respuesta_y_dar_feedback(ejercicio_texto, respuesta_estudiante)
+    
                     st.session_state.exam_results.append({
                         "pregunta": q["pregunta"],
                         "seleccion": respuesta_usuario,
                         "correcta": correcta,
                         "respuesta_correcta": q["respuesta_correcta"],
-                        "opciones": q["opciones"]
+                        "opciones": q["opciones"],
+                        "feedback": feedback
                     })
                     st.session_state.exam_index += 1
                     st.rerun()
@@ -235,18 +243,25 @@ def main():
                 st.success("¡Examen finalizado!")
                 total = len(st.session_state.exam_results)
                 correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
-                st.markdown(f"### Resultado: {correctas} / {total} correctas")
+                st.markdown(f"### ✅ Resultado final: {correctas} / {total} correctas")
+    
                 for i, r in enumerate(st.session_state.exam_results):
                     st.markdown(f"---\n**Pregunta {i+1}:** {r['pregunta']}")
                     for clave, texto in r["opciones"].items():
                         prefijo = "✅" if clave == r["respuesta_correcta"] else "❌" if clave == r["seleccion"] else "•"
                         st.markdown(f"{prefijo} {clave}) {texto}")
+    
                     st.markdown(f"**Tu respuesta:** {r['seleccion']} – {'Correcta ✅' if r['correcta'] else 'Incorrecta ❌'}")
+    
+                    if not r["correcta"] and r["feedback"]:
+                        st.markdown("### 💡 Feedback:")
+                        st.markdown(r["feedback"])
     
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
                         del st.session_state[key]
                     st.rerun()
+
 
 
 if __name__ == "__main__":
