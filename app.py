@@ -82,26 +82,27 @@ def generar_ejercicio_opcion_multiple(tema, nivel):
         return None  # Podrías loggear esto si estás en modo debug
 
 def main():
-    st.title("👨‍🏫 Chatbot de Bases de Datos para Universitarios")
+    st.title("👨‍🏫 Mini-Módulo de Evaluación Formativa Adaptativa Asistida por IA para el curso Bases de Datos para Universitarios")
     st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Bases de Datos")
     
     # Selectores para Tema y Nivel
-    temas = ["Introducción a las Bases de Datos",
-        "Modelo Relacional y Normalización",
-        "SQL - Nivel Básico",
-        "SQL - Nivel Intermedio",
-        "SQL - Nivel Avanzado",
-        "Administración de Bases de Datos",
-        "Modelado de Datos y Herramientas",
-        "Proyecto Final o Caso Práctico",
-        "Temas Complementarios"
+    temas = ["Sistema de Gestión de Bases de Datos (DBMS)",
+        "Lenguaje SQL",
+        "Diseño de Bases de Datos",
+        "Tipos de datos",
+        "Seguridad de la base de datos",
+        "Consultas SQL Básicas",
+        "Consultas SQL Intermedias",
+        "Consultas SQL Avanzadas",
+        "Diseño de la base de datos",
+        "Mantenimiento de la base de datos"
     ]
     nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado"])
     tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
     
     # Opciones del chatbot
     opcion = st.radio("¿Qué quieres hacer hoy?",
-                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Simular un Examen (Opción única)"))
+                      ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Probar mi Conocimiento"))
     
     if opcion == "Explicar un Concepto":
         st.header(f"Explicación de {tema_seleccionado}")
@@ -135,8 +136,8 @@ def main():
         else:
             st.info("Primero genera un ejercicio en la sección 'Proponer un Ejercicio'.")
 
-    elif opcion == "Simular un Examen (Opción única)":
-        st.header("📝 Examen de Opción Múltiple con Feedback Final")
+    elif opcion == "Probar mi Conocimiento)":
+        st.header("📝 Examen de Opción Múltiple")
     
         if 'exam_started' not in st.session_state:
             st.session_state.exam_started = False
