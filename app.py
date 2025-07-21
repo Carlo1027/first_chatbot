@@ -4,6 +4,8 @@ import streamlit as st
 import google.generativeai as genai
 import os
 import random
+import pandas as pd
+from io import BytesIO
 
 # Configurar Gemini API Key
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
@@ -202,6 +204,50 @@ def main():
                 total = len(st.session_state.exam_results)
                 correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
                 st.markdown(f"### ✅ Resultado final: {correctas} / {total} correctas")
+
+
+                # --- Formulario para exportar resultados ---
+                st.markdown("### 📄 Descargar Resultados del Examen")
+                
+                nombre_estudiante = st.text_input("🧑‍🎓 Tu nombre", key="nombre_resultado")
+                correo_estudiante = st.text_input("📧 Tu correo", key="correo_resultado")
+                
+                if nombre_estudiante and correo_estudiante:
+                    df_resultados = pd.DataFrame([
+                        {
+                            "Pregunta": r["pregunta"],
+                            "Nivel": r["nivel"],
+                            "Tu respuesta": r["seleccion"],
+                            "Respuesta correcta": r["respuesta_correcta"],
+                            "¿Correcta?": "Sí" if r["correcta"] else "No"
+                        }
+                        for r in st.session_state.exam_results
+                    ])
+                    df_resultados.loc[len(df_resultados.index)] = {
+                        "Pregunta": "PUNTAJE FINAL",
+                        "Nivel": "",
+                        "Tu respuesta": "",
+                        "Respuesta correcta": "",
+                        "¿Correcta?": f"{correctas} de {total}"
+                    }
+                
+                    excel_output = BytesIO()
+                    with pd.ExcelWriter(excel_output, engine='xlsxwriter') as writer:
+                        df_resultados.to_excel(writer, index=False, sheet_name='Resultados')
+                    excel_output.seek(0)
+                
+                    st.download_button(
+                        label="📥 Descargar Resultados en Excel",
+                        data=excel_output,
+                        file_name=f"Resultados_{nombre_estudiante.replace(' ', '_')}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                else:
+                    st.info("Completa tu nombre y correo para activar la descarga.")
+
+
+
+                
 
                 for i, r in enumerate(st.session_state.exam_results):
                     st.markdown(f"---\n**Pregunta {i+1} (Nivel: {r['nivel']}):** {r['pregunta']}")
