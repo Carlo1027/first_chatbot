@@ -7,6 +7,11 @@ import random
 import pandas as pd
 from io import BytesIO
 
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+
+
 # Configurar Gemini API Key
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
@@ -87,6 +92,54 @@ def generar_ejercicio_opcion_multiple(tema, nivel, preguntas_previas=None):
         }
     except Exception:
         return None
+
+
+
+def generar_pdf(nombre_estudiante, exam_results, puntaje):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+    y = height - inch
+
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, f"Resultado del Examen – {nombre_estudiante}")
+    y -= 30
+    c.setFont("Helvetica", 12)
+    c.drawString(50, y, f"Puntaje final: {puntaje}")
+    y -= 40
+
+    for i, r in enumerate(exam_results):
+        pregunta = r['pregunta']
+        opciones = r['opciones']
+        seleccion = r['seleccion']
+        correcta = r['respuesta_correcta']
+        estado = "✅" if r['correcta'] else "❌"
+
+        if y < 150:
+            c.showPage()
+            y = height - inch
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(50, y, f"{i+1}. {pregunta[:100]}")
+        y -= 18
+
+        c.setFont("Helvetica", 11)
+        for clave in ['A', 'B', 'C', 'D']:
+            if clave in opciones:
+                texto = opciones[clave]
+                c.drawString(70, y, f"{clave}) {texto[:80]}")
+                y -= 15
+
+        c.drawString(70, y, f"Tu respuesta: {seleccion}    | Correcta: {correcta}    {estado}")
+        y -= 25
+
+    c.save()
+    buffer.seek(0)
+    return buffer
+
+
+
+
 
 # === Interfaz Principal ===
 def main():
@@ -263,6 +316,25 @@ def main():
 
 
 
+
+                st.markdown("### 📄 Descargar Resultados como PDF")
+
+                if nombre_estudiante and correo_estudiante:
+                    if st.button("📥 Generar y Descargar PDF"):
+                        pdf_bytes = generar_pdf(nombre_estudiante, st.session_state.exam_results, f"{correctas} / {total}")
+                        st.download_button(
+                            label="Descargar PDF",
+                            data=pdf_bytes,
+                            file_name=f"Resultados_{nombre_estudiante.replace(' ', '_')}.pdf",
+                            mime="application/pdf"
+                        )
+                else:
+                    st.info("Por favor, completa tu nombre y correo para habilitar la descarga.")
+
+
+
+                
+                
 
 
                 
