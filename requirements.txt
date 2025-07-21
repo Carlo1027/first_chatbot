@@ -1,3 +1,5 @@
 # requirements.txt
 google-generativeai
 streamlit
+xlsxwriter
+pandas
