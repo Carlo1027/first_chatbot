@@ -315,7 +315,7 @@ def main():
 
 
 
-                st.markdown("### 📄 Descargar Resultados como PDF")
+                # st.markdown("### 📄 Descargar Resultados como PDF")
 
                 if nombre_estudiante and correo_estudiante:
                     if st.button("📥 Generar y Descargar PDF"):
