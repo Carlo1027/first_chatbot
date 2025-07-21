@@ -117,7 +117,7 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
             y = height - inch
 
         c.setFont("Helvetica-Bold", 12)
-        wrapped_pregunta = wrap(f"{i+1}. {pregunta}", width=80)
+        wrapped_pregunta = wrap(f"{i+1}. {pregunta}", width=90)
         for line in wrapped_pregunta:
             c.drawString(50, y, line)
             y -= 15
@@ -126,7 +126,7 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
         for clave in ['A', 'B', 'C', 'D']:
             if clave in opciones:
                 texto = opciones[clave]
-                wrapped_opcion = wrap(f"{clave}) {texto}", width=70)
+                wrapped_opcion = wrap(f"{clave}) {texto}", width=80)
                 for linea in wrapped_opcion:
                     c.drawString(70, y, linea)
                     y -= 13
