@@ -1,5 +1,4 @@
 # Author: Carlo Castro
-# app.py
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -11,12 +10,11 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from textwrap import wrap
 
-# Configurar Gemini API Key
+# Configurar Gemini API Key como secreto
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
 
-# === Funciones del core ===
 def explicar_concepto(tema):
     prompt = f"""Eres un tutor de Bases de Datos. Explica el concepto de {tema} de forma clara, concisa y paso a paso, como si se lo explicaras a un estudiante universitario. Incluye ejemplos si es pertinente."""
     response = model.generate_content(prompt)
@@ -139,10 +137,9 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
     buffer.seek(0)
     return buffer
 
-# === Interfaz Principal ===
 def main():
     st.title("👨‍🏫 Mini-Módulo de Evaluación Formativa Adaptativa Asistida por IA para el curso Bases de Datos para Universitarios")
-    st.markdown("\u00a1Bienvenido! Estoy aquí para ayudarte con tus dudas de Bases de Datos")
+    st.markdown("¡Bienvenido! Estoy aquí para ayudarte con tus dudas de Bases de Datos")
 
     temas = [
         "Sistema de Gestión de Bases de Datos (DBMS)",
@@ -251,7 +248,7 @@ def main():
                             del st.session_state[key]
                     st.rerun()
             else:
-                st.success("\u00a1Examen finalizado!")
+                st.success("¡Examen finalizado!")
                 total = len(st.session_state.exam_results)
                 correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
                 st.markdown(f"### ✅ Resultado final: {correctas} / {total} correctas")              
@@ -319,6 +316,7 @@ def main():
                 else:
                     st.info("Completa tu nombre y correo para habilitar la descarga en formato PDF.")               
 
+                # --- Botón para reiniciar resultado ---
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
                         del st.session_state[key]
