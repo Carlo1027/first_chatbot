@@ -103,7 +103,7 @@ def main():
         "Diseño de la base de datos",
         "Mantenimiento de la base de datos"
     ]
-    nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado", "Vida real"])
+    nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado", "Examen real"])
     tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
 
     opcion = st.radio("¿Qué quieres hacer hoy?", ("Explicar un Concepto", "Proponer un Ejercicio", "Evaluar mi Respuesta a un Ejercicio", "Examen de Opción Múltiple"))
@@ -152,7 +152,7 @@ def main():
         if not st.session_state.exam_started:
             if st.button("Comenzar Examen"):
                 with st.spinner("Generando preguntas..."):
-                    niveles_posibles = ["Básico", "Intermedio", "Avanzado"] if nivel_estudiante == "Vida real" else [nivel_estudiante]
+                    niveles_posibles = ["Básico", "Intermedio", "Avanzado"] if nivel_estudiante == "Examen real" else [nivel_estudiante]
                     for _ in range(10):
                         nivel_random = random.choice(niveles_posibles)
                         q = generar_ejercicio_opcion_multiple(tema_seleccionado, nivel_random, preguntas_previas=st.session_state.exam_questions)
