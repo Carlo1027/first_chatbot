@@ -90,14 +90,14 @@ def generar_ejercicio_opcion_multiple(tema, nivel, preguntas_previas=None):
     except Exception:
         return None
 
-def generar_pdf(nombre_estudiante, exam_results, puntaje):
+def generar_pdf(nombre_estudiante, correo_estudiante, exam_results, puntaje):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
     y = height - inch
 
     c.setFont("Helvetica-Bold", 14)
-    c.drawString(50, y, f"Resultado del Examen – {nombre_estudiante}")
+    c.drawString(50, y, f"Resultado del Examen – {nombre_estudiante} - {correo_estudiante}")
     y -= 30
     c.setFont("Helvetica", 12)
     c.drawString(50, y, f"Puntaje final: {puntaje}")
@@ -306,7 +306,7 @@ def main():
 
                 if nombre_estudiante and correo_estudiante:
                     if st.button("📥 Generar y Descargar PDF"):
-                        pdf_bytes = generar_pdf(nombre_estudiante, st.session_state.exam_results, f"{correctas} / {total}")
+                        pdf_bytes = generar_pdf(nombre_estudiante, correo_estudiante, st.session_state.exam_results, f"{correctas} / {total}")
                         st.download_button(
                             label="Descargar PDF",
                             data=pdf_bytes,
