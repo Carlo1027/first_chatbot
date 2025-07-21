@@ -203,7 +203,21 @@ def main():
                 st.success("\u00a1Examen finalizado!")
                 total = len(st.session_state.exam_results)
                 correctas = sum(1 for r in st.session_state.exam_results if r["correcta"])
-                st.markdown(f"### ✅ Resultado final: {correctas} / {total} correctas")
+                st.markdown(f"### ✅ Resultado final: {correctas} / {total} correctas")              
+
+                for i, r in enumerate(st.session_state.exam_results):
+                    st.markdown(f"---\n**Pregunta {i+1} (Nivel: {r['nivel']}):** {r['pregunta']}")
+                    for clave, texto in r["opciones"].items():
+                        prefijo = "✅" if clave == r["respuesta_correcta"] else "❌" if clave == r["seleccion"] else "•"
+                        st.markdown(f"{prefijo} {clave}) {texto}")
+
+                    st.markdown(f"**Tu respuesta:** {r['seleccion']} – {'Correcta ✅' if r['correcta'] else 'Incorrecta ❌'}")
+
+                    if not r["correcta"] and r["feedback"]:
+                        with st.expander("💡 Ver Feedback"):
+                            st.markdown(r["feedback"])
+
+
 
 
                 # --- Formulario para exportar resultados ---
@@ -247,19 +261,11 @@ def main():
 
 
 
+
+
+
+
                 
-
-                for i, r in enumerate(st.session_state.exam_results):
-                    st.markdown(f"---\n**Pregunta {i+1} (Nivel: {r['nivel']}):** {r['pregunta']}")
-                    for clave, texto in r["opciones"].items():
-                        prefijo = "✅" if clave == r["respuesta_correcta"] else "❌" if clave == r["seleccion"] else "•"
-                        st.markdown(f"{prefijo} {clave}) {texto}")
-
-                    st.markdown(f"**Tu respuesta:** {r['seleccion']} – {'Correcta ✅' if r['correcta'] else 'Incorrecta ❌'}")
-
-                    if not r["correcta"] and r["feedback"]:
-                        with st.expander("💡 Ver Feedback"):
-                            st.markdown(r["feedback"])
 
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
