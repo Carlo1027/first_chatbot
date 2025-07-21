@@ -6,11 +6,10 @@ import os
 import random
 import pandas as pd
 from io import BytesIO
-
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
-
+from textwrap import wrap
 
 # Configurar Gemini API Key
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
@@ -93,8 +92,6 @@ def generar_ejercicio_opcion_multiple(tema, nivel, preguntas_previas=None):
     except Exception:
         return None
 
-
-
 def generar_pdf(nombre_estudiante, exam_results, puntaje):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -120,15 +117,19 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
             y = height - inch
 
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y, f"{i+1}. {pregunta[:100]}")
-        y -= 18
+        wrapped_pregunta = wrap(f"{i+1}. {pregunta}", width=100)
+        for line in wrapped_pregunta:
+            c.drawString(50, y, line)
+            y -= 15
 
         c.setFont("Helvetica", 11)
         for clave in ['A', 'B', 'C', 'D']:
             if clave in opciones:
                 texto = opciones[clave]
-                c.drawString(70, y, f"{clave}) {texto[:80]}")
-                y -= 15
+                wrapped_opcion = wrap(f"{clave}) {texto}", width=90)
+                for linea in wrapped_opcion:
+                    c.drawString(70, y, linea)
+                    y -= 13
 
         c.drawString(70, y, f"Tu respuesta: {seleccion}    | Correcta: {correcta}    {estado}")
         y -= 25
@@ -136,10 +137,6 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
     c.save()
     buffer.seek(0)
     return buffer
-
-
-
-
 
 # === Interfaz Principal ===
 def main():
