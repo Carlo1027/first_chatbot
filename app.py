@@ -151,10 +151,10 @@ def main():
         "Tipos de datos",
         "Seguridad de la base de datos",
         "Consultas SQL Básicas",
-        "Consultas SQL Intermedias",
-        "Consultas SQL Avanzadas",
+        "Optimización y buenas prácticas SQL",
         "Diseño de la base de datos",
-        "Mantenimiento de la base de datos"
+        "Mantenimiento de la base de datos",
+        "Administración de base de datos"
     ]
     nivel_estudiante = st.selectbox("Selecciona tu nivel actual:", ["Básico", "Intermedio", "Avanzado", "Examen real"])
     tema_seleccionado = st.selectbox("Selecciona un tema:", temas)
@@ -268,9 +268,6 @@ def main():
                         with st.expander("💡 Ver Feedback"):
                             st.markdown(r["feedback"])
 
-
-
-
                 # --- Formulario para exportar resultados ---
                 st.markdown("### 📄 Descargar Resultados del Examen")
                 
@@ -308,14 +305,7 @@ def main():
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
                 else:
-                    st.info("Completa tu nombre y correo para activar la descarga.")
-
-
-
-
-
-
-                # st.markdown("### 📄 Descargar Resultados como PDF")
+                    st.info("Completa tu nombre y correo para activar la descarga en formato excel.")
 
                 if nombre_estudiante and correo_estudiante:
                     if st.button("📥 Generar y Descargar PDF"):
@@ -327,15 +317,7 @@ def main():
                             mime="application/pdf"
                         )
                 else:
-                    st.info("Por favor, completa tu nombre y correo para habilitar la descarga.")
-
-
-
-                
-                
-
-
-                
+                    st.info("Completa tu nombre y correo para habilitar la descarga en formato PDF.")               
 
                 if st.button("Reiniciar Examen"):
                     for key in ["exam_started", "exam_index", "exam_questions", "exam_results"]:
