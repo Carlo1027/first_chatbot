@@ -110,6 +110,7 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
         opciones = r['opciones']
         seleccion = r['seleccion']
         correcta = r['respuesta_correcta']
+        nivel = r['nivel']
         estado = "✅" if r['correcta'] else "❌"
 
         if y < 150:
@@ -117,7 +118,7 @@ def generar_pdf(nombre_estudiante, exam_results, puntaje):
             y = height - inch
 
         c.setFont("Helvetica-Bold", 12)
-        wrapped_pregunta = wrap(f"{i+1}. {pregunta}", width=90)
+        wrapped_pregunta = wrap(f"{i+1}. {pregunta} (Nivel: {nivel})", width=90)
         for line in wrapped_pregunta:
             c.drawString(50, y, line)
             y -= 15
